@@ -1,0 +1,199 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  PATIENT
+  DOCTOR
+  ADMIN
+}
+
+enum AppointmentStatus {
+  BOOKED
+  CHECKED_IN
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum AppointmentType {
+  BPJS
+  GENERAL
+}
+
+enum CheckInMethod {
+  QR
+  CODE
+}
+
+enum NotificationChannel {
+  WHATSAPP
+  EMAIL
+}
+
+enum NotificationType {
+  CONFIRMATION
+  REMINDER_24H
+  REMINDER_1H
+  CANCELLED
+  RESCHEDULED
+}
+
+enum NotificationStatus {
+  SUCCESS
+  FAILED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  phone        String?
+  passwordHash String
+  role         UserRole @default(PATIENT)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  patient Patient?
+  doctor  Doctor?
+}
+
+model Patient {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  nik         String   @unique
+  rmNumber    String?  @unique
+  fullName    String
+  dateOfBirth DateTime
+  gender      String
+  address     String?
+  bpjsNumber  String?
+  bpjsClass   String?
+  isBpjs      Boolean  @default(false)
+  phone       String?
+
+  user           User               @relation(fields: [userId], references: [id])
+  appointments   Appointment[]
+  bpjsReferrals  BpjsReferral[]
+  medicalRecords MockMedicalRecord[]
+}
+
+model Doctor {
+  id              String          @id @default(cuid())
+  userId          String?         @unique
+  specialtyId     String
+  fullName        String
+  sipNumber       String?
+  photoUrl        String?
+  experienceYears Int?
+  ratingAverage   Float?          @default(0)
+  location        String?
+  acceptsBpjs     Boolean         @default(true)
+
+  user         User?          @relation(fields: [userId], references: [id])
+  specialty    Specialty      @relation(fields: [specialtyId], references: [id])
+  schedules    DoctorSchedule[]
+  appointments Appointment[]
+}
+
+model Specialty {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+
+  doctors Doctor[]
+}
+
+model DoctorSchedule {
+  id                  String        @id @default(cuid())
+  doctorId            String
+  dayOfWeek           Int
+  startTime           String
+  endTime             String
+  slotDurationMinutes Int
+  maxPatientsPerSlot  Int
+  location            String?
+
+  doctor       Doctor        @relation(fields: [doctorId], references: [id])
+  appointments Appointment[]
+}
+
+model Appointment {
+  id                String            @id @default(cuid())
+  patientId         String
+  doctorId          String
+  doctorScheduleId  String?
+  date              DateTime
+  startTime         String
+  endTime           String
+  appointmentType   AppointmentType
+  bookingCode       String            @unique
+  qrCodeData        String
+  status            AppointmentStatus @default(BOOKED)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  cancelledAt       DateTime?
+  cancelledReason   String?
+  rescheduledFromId String?
+  bpjsReferralId    String?
+
+  patient         Patient        @relation(fields: [patientId], references: [id])
+  doctor          Doctor         @relation(fields: [doctorId], references: [id])
+  doctorSchedule  DoctorSchedule? @relation(fields: [doctorScheduleId], references: [id])
+  rescheduledFrom Appointment?   @relation("Rescheduled", fields: [rescheduledFromId], references: [id])
+  rescheduledTo   Appointment[]  @relation("Rescheduled")
+  bpjsReferral    BpjsReferral?  @relation(fields: [bpjsReferralId], references: [id])
+  checkInLogs     CheckInLog[]
+  notificationLogs NotificationLog[]
+}
+
+model BpjsReferral {
+  id             String        @id @default(cuid())
+  referralNumber String        @unique
+  patientId      String
+  diagnosis      String?
+  issuedAt       DateTime
+  validUntil     DateTime
+  isValid        Boolean       @default(true)
+
+  patient      Patient      @relation(fields: [patientId], references: [id])
+  appointments Appointment[]
+}
+
+model CheckInLog {
+  id            String        @id @default(cuid())
+  appointmentId String
+  checkedInAt   DateTime      @default(now())
+  method        CheckInMethod
+  queueNumber   Int
+
+  appointment Appointment @relation(fields: [appointmentId], references: [id])
+}
+
+model NotificationLog {
+  id            String             @id @default(cuid())
+  appointmentId String
+  channel       NotificationChannel
+  type          NotificationType
+  sentAt        DateTime           @default(now())
+  status        NotificationStatus
+  errorMessage  String?
+
+  appointment Appointment @relation(fields: [appointmentId], references: [id])
+}
+
+model MockMedicalRecord {
+  id              String   @id @default(cuid())
+  patientId       String
+  summary         String?
+  lastVisitDate   DateTime?
+  chronicDiseases String?
+  allergies       String?
+  lastDiagnosis   String?
+
+  patient Patient @relation(fields: [patientId], references: [id])
+}
