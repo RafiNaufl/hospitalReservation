@@ -7,13 +7,14 @@ import { AppointmentsTable } from "@/components/doctor/AppointmentsTable"
 import { QueueCard } from "@/components/doctor/QueueCard"
 import { MiniCalendar } from "@/components/doctor/MiniCalendar"
 import { useToast } from "@/components/ui/use-toast"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import { Calendar } from "lucide-react"
 
 interface DashboardData {
   doctor: {
     fullName: string
     photoUrl: string | null
+    specialtyName: string
   }
   stats: {
     total: number
@@ -147,69 +148,86 @@ export function DashboardClient() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8fafc]">
+    <div className="flex-1">
       <DashboardHeader
         doctorName={data?.doctor.fullName || "Dokter"}
         photoUrl={data?.doctor.photoUrl}
+        specialtyName={data?.doctor.specialtyName || "Spesialis"}
         onSearch={handleSearch}
         notificationsCount={data?.queue.length || 0}
       />
 
-      <main className="p-4 md:p-6 lg:p-8 space-y-6 max-w-[1600px] mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-zinc-100">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <h2 className="text-2xl font-black text-zinc-900 tracking-tight">Dashboard Dokter</h2>
+      <div className="p-4 md:p-8 lg:p-12 space-y-8 max-w-[1800px] mx-auto">
+        <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 bg-white p-8 rounded-[2.5rem] shadow-xl shadow-zinc-200/50 border border-white/50 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full -mr-32 -mt-32 blur-3xl group-hover:bg-emerald-500/10 transition-colors duration-1000"></div>
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="flex gap-1">
+                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse delay-75"></span>
+                <span className="h-2 w-2 rounded-full bg-emerald-300 animate-pulse delay-150"></span>
+              </div>
+              <h2 className="text-3xl font-black text-zinc-900 tracking-tighter uppercase italic">Dashboard Dokter</h2>
             </div>
-            <p className="text-sm text-muted-foreground font-medium">
-              Selamat datang kembali, <span className="text-emerald-600 font-bold">dr. {data?.doctor.fullName}</span>. Kelola antrean hari ini dengan efisien.
+            <p className="text-sm text-zinc-500 font-bold tracking-tight">
+              Selamat datang kembali, <span className="text-emerald-600 font-black underline decoration-emerald-200 underline-offset-4 decoration-4">dr. {data?.doctor.fullName}</span>. 
+              Sistem siap untuk mengelola <span className="text-zinc-900 font-black">{data?.stats.total || 0} pasien</span> hari ini.
             </p>
           </div>
-          <div className="flex items-center gap-3 text-sm font-bold text-zinc-600 bg-zinc-50 px-5 py-2.5 rounded-xl border border-zinc-100 shadow-inner">
-            <Calendar className="w-4 h-4 text-emerald-600" />
-            {new Date().toLocaleDateString("id-ID", {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
+          <div className="flex items-center gap-4 text-sm font-black text-zinc-600 bg-zinc-50 px-8 py-4 rounded-[1.5rem] border border-zinc-100 shadow-inner relative z-10">
+            <div className="p-2 bg-white rounded-xl shadow-sm">
+              <Calendar className="w-5 h-5 text-emerald-600" />
+            </div>
+            <div className="flex flex-col">
+              <span className="uppercase tracking-widest text-[10px] text-zinc-400 mb-0.5">Hari & Tanggal</span>
+              {new Date().toLocaleDateString("id-ID", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </div>
           </div>
         </div>
 
         {data?.stats && <StatsCards stats={data.stats} />}
 
-        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
-          <div className="xl:col-span-3 space-y-6">
-            <Card className="border-none shadow-sm bg-white rounded-2xl overflow-hidden">
-              <CardHeader className="flex flex-row items-center justify-between pb-4 border-b border-zinc-50 bg-zinc-50/30 px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-8 space-y-8">
+            <Card className="rounded-[2.5rem] shadow-xl shadow-zinc-200/50 border-none bg-white overflow-hidden">
+              <div className="flex flex-col md:flex-row items-center justify-between p-8 border-b border-zinc-50 bg-gradient-to-r from-zinc-50/50 to-white">
                 <div>
-                  <CardTitle className="text-sm font-bold uppercase tracking-wider text-zinc-800">Janji Temu Hari Ini</CardTitle>
-                  <p className="text-[10px] text-muted-foreground font-bold uppercase mt-1">Total {filteredAppointments.length} Pasien Terdaftar</p>
+                  <h3 className="text-lg font-black text-zinc-900 tracking-tight uppercase">Jadwal Janji Temu</h3>
+                  <p className="text-[10px] text-zinc-400 font-black uppercase tracking-widest mt-1.5 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    Update Real-time Aktif
+                  </p>
                 </div>
-                <div className="flex gap-2">
-                   {/* Add filter buttons here if needed */}
+                <div className="flex items-center gap-3 mt-4 md:mt-0">
+                  <div className="px-4 py-2 bg-zinc-100 rounded-xl text-[10px] font-black text-zinc-500 uppercase tracking-widest">
+                    Total: {filteredAppointments.length} Pasien
+                  </div>
                 </div>
-              </CardHeader>
-              <CardContent className="p-0">
+              </div>
+              <div className="p-2">
                 <AppointmentsTable
                   appointments={filteredAppointments}
                   onStatusUpdate={handleStatusUpdate}
                 />
-              </CardContent>
+              </div>
             </Card>
 
             <MiniCalendar events={calendarEvents} />
           </div>
 
-          <div className="space-y-6 xl:col-span-1">
+          <div className="lg:col-span-4 space-y-8">
             <QueueCard
               queue={data?.queue || []}
               onCallNext={(id) => handleStatusUpdate(id, "IN_PROGRESS")}
             />
           </div>
         </div>
-      </main>
+      </div>
     </div>
   )
 }

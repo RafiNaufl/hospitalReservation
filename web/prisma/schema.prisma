@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../src/generated/prisma"
 }
 
@@ -76,6 +76,7 @@ model Patient {
   bpjsClass   String?
   isBpjs      Boolean  @default(false)
   phone       String?
+  photoUrl    String?
 
   user           User               @relation(fields: [userId], references: [id])
   appointments   Appointment[]

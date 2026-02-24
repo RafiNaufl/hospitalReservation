@@ -15,6 +15,7 @@ export async function GET() {
   const userId = session.user.id
   const doctor = await prisma.doctor.findFirst({
     where: { userId },
+    include: { specialty: true },
   })
 
   if (!doctor) {
@@ -86,6 +87,7 @@ export async function GET() {
     doctor: {
       fullName: doctor.fullName,
       photoUrl: doctor.photoUrl,
+      specialtyName: doctor.specialty.name,
     },
     stats: {
       total,

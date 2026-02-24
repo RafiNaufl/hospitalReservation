@@ -9,7 +9,8 @@ const bodySchema = z.object({
   doctorId: z.string().cuid(),
   date: z.string(),
   slot: z.string(),
-  notes: z.string().optional(),
+  notes: z.string().min(1, "Keluhan harus diisi"),
+  appointmentType: z.enum(["GENERAL", "BPJS"]),
 });
 
 export async function POST(request: Request) {
@@ -31,7 +32,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const { specialtyId, doctorId, date, slot, notes } = parsed.data;
+  const { specialtyId, doctorId, date, slot, notes, appointmentType } = parsed.data;
 
   const user = await prisma.user.findUnique({
     where: { email: session.user.email },
@@ -119,8 +120,8 @@ export async function POST(request: Request) {
       date: appointmentDate,
       startTime: slot,
       endTime,
-      appointmentType: "GENERAL",
-      notes: notes || null,
+      appointmentType,
+      notes: notes,
       bookingCode,
       qrCodeData,
     },

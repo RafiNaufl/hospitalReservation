@@ -43,6 +43,9 @@ export default function LoginPage() {
       return;
     }
 
+    // Refresh data server sebelum navigasi
+    router.refresh();
+
     const sessionResponse = await fetch("/api/auth/session");
     const sessionData = await sessionResponse.json().catch(() => null);
 

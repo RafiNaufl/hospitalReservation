@@ -18,10 +18,12 @@ interface MiniCalendarProps {
 
 export function MiniCalendar({ events }: MiniCalendarProps) {
   return (
-    <Card className="border-zinc-200 shadow-sm overflow-hidden">
-      <CardHeader className="pb-2 bg-zinc-50/50 border-b">
-        <CardTitle className="text-sm font-bold flex items-center gap-2">
-          <CalendarIcon className="w-4 h-4 text-emerald-600" />
+    <Card className="border-none shadow-md bg-white overflow-hidden rounded-2xl group transition-all duration-300 hover:shadow-xl">
+      <CardHeader className="pb-4 bg-gradient-to-r from-zinc-50/80 to-white border-b border-zinc-100 px-6">
+        <CardTitle className="text-xs font-black uppercase tracking-[0.2em] flex items-center gap-2.5 text-zinc-900">
+          <div className="bg-emerald-500 p-1.5 rounded-lg shadow-lg shadow-emerald-100">
+            <CalendarIcon className="w-3.5 h-3.5 text-white" />
+          </div>
           Jadwal Praktik
         </CardTitle>
       </CardHeader>
@@ -32,7 +34,7 @@ export function MiniCalendar({ events }: MiniCalendarProps) {
             initialView="timeGridDay"
             headerToolbar={false}
             events={events}
-            height="500px"
+            height="550px"
             allDaySlot={false}
             slotMinTime="07:00:00"
             slotMaxTime="21:00:00"
@@ -53,26 +55,51 @@ export function MiniCalendar({ events }: MiniCalendarProps) {
       </CardContent>
       <style jsx global>{`
         .mini-calendar .fc {
-          font-size: 0.75rem;
+          font-family: inherit;
+          font-size: 0.7rem;
           border: none;
         }
         .mini-calendar .fc-theme-standard td,
         .mini-calendar .fc-theme-standard th {
-          border-color: #f4f4f5;
+          border-color: #f8fafc;
         }
         .mini-calendar .fc-timegrid-slot {
-          height: 2.5em !important;
+          height: 3em !important;
+          border-bottom: 1px dashed #f1f5f9 !important;
+        }
+        .mini-calendar .fc-timegrid-slot-label {
+          font-weight: 800;
+          color: #94a3b8;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
         }
         .mini-calendar .fc-event {
-          border-radius: 4px;
-          padding: 1px 2px;
+          border-radius: 8px;
+          padding: 4px 6px;
           border: none;
+          box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+          transition: transform 0.2s;
         }
-        .mini-calendar .fc-v-event {
-          background-color: #10b981;
+        .mini-calendar .fc-event:hover {
+          transform: scale(1.02);
+          z-index: 10;
+        }
+        .mini-calendar .fc-event-title {
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: -0.02em;
+        }
+        .mini-calendar .fc-event-time {
+          font-weight: 700;
+          opacity: 0.8;
         }
         .mini-calendar .fc-timegrid-now-indicator-line {
           border-color: #ef4444;
+          border-width: 2px;
+        }
+        .mini-calendar .fc-timegrid-now-indicator-arrow {
+          border-color: #ef4444;
+          border-width: 5px;
         }
       `}</style>
     </Card>

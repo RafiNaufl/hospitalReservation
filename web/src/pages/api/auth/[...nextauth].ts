@@ -33,10 +33,30 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
+        let photoUrl = null;
+        let fullName = null;
+        if (user.role === "PATIENT") {
+          const patient = await prisma.patient.findUnique({
+            where: { userId: user.id },
+            select: { photoUrl: true, fullName: true },
+          });
+          photoUrl = patient?.photoUrl;
+          fullName = patient?.fullName;
+        } else if (user.role === "DOCTOR") {
+          const doctor = await prisma.doctor.findUnique({
+            where: { userId: user.id },
+            select: { photoUrl: true, fullName: true },
+          });
+          photoUrl = doctor?.photoUrl;
+          fullName = doctor?.fullName;
+        }
+
         return {
           id: user.id,
           email: user.email,
           role: user.role,
+          image: photoUrl,
+          name: fullName,
         };
       },
     }),
@@ -48,10 +68,15 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      if (user && "role" in user) {
-        const value = (user as { role?: string }).role;
-        if (value) {
-          token.role = value;
+      if (user) {
+        if ("role" in user) {
+          token.role = (user as { role?: string }).role;
+        }
+        if ("image" in user) {
+          token.picture = (user as { image?: string }).image;
+        }
+        if ("name" in user) {
+          token.name = (user as { name?: string }).name;
         }
       }
       return token;
@@ -64,6 +89,12 @@ export const authOptions: NextAuthOptions = {
         }
         if (token.role) {
           user.role = token.role;
+        }
+        if (token.picture) {
+          user.image = token.picture;
+        }
+        if (token.name) {
+          user.name = token.name;
         }
       }
       return session;
