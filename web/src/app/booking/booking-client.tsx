@@ -53,6 +53,7 @@ export function BookingClient({
     useState<string>(initialDoctorId);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedSlot, setSelectedSlot] = useState<string>("");
+  const [notes, setNotes] = useState<string>("");
   const [slots, setSlots] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>("");
@@ -198,6 +199,7 @@ export function BookingClient({
         doctorId: selectedDoctorId,
         date: selectedDate,
         slot: selectedSlot,
+        notes: notes,
       }),
     });
     setLoading(false);
@@ -416,6 +418,17 @@ export function BookingClient({
                     </p>
                   </div>
                 )}
+                <div className="space-y-2 pt-2">
+                  <label className="text-sm font-medium text-zinc-800 dark:text-zinc-100">
+                    Keluhan (Opsional)
+                  </label>
+                  <textarea
+                    className="flex min-h-[80px] w-full rounded-xl border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
+                    placeholder="Tuliskan keluhan atau alasan kunjungan Anda..."
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                  />
+                </div>
               </div>
             )}
 

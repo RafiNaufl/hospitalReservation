@@ -1,10 +1,23 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { GET } from "@/app/api/doctors/route";
 
+interface MockDoctor {
+  id: string
+  fullName: string
+  specialtyId: string
+  location?: string | null
+  photoUrl?: string | null
+}
+
+interface MockSpecialty {
+  id: string
+  name: string
+}
+
 const buildRequest = (url: string) => new Request(url);
 
-let doctorsStore: any[] = [];
-let specialtiesStore: any[] = [{ id: "spec-umum", name: "Umum" }];
+let doctorsStore: MockDoctor[] = [];
+let specialtiesStore: MockSpecialty[] = [{ id: "spec-umum", name: "Umum" }];
 
 const resetStores = () => {
   doctorsStore = [];
@@ -21,7 +34,7 @@ vi.mock("@/lib/prisma", () => {
           }
           return doctorsStore.filter((item) => item.specialtyId === where.specialtyId);
         }),
-        createMany: vi.fn(async ({ data }: { data: any[] }) => {
+        createMany: vi.fn(async ({ data }: { data: MockDoctor[] }) => {
           doctorsStore = [...doctorsStore, ...data];
           return { count: data.length };
         }),

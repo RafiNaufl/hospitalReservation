@@ -9,6 +9,7 @@ const bodySchema = z.object({
   doctorId: z.string().cuid(),
   date: z.string(),
   slot: z.string(),
+  notes: z.string().optional(),
 });
 
 export async function POST(request: Request) {
@@ -30,7 +31,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const { specialtyId, doctorId, date, slot } = parsed.data;
+  const { specialtyId, doctorId, date, slot, notes } = parsed.data;
 
   const user = await prisma.user.findUnique({
     where: { email: session.user.email },
@@ -119,6 +120,7 @@ export async function POST(request: Request) {
       startTime: slot,
       endTime,
       appointmentType: "GENERAL",
+      notes: notes || null,
       bookingCode,
       qrCodeData,
     },

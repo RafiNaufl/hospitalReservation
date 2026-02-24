@@ -43,7 +43,7 @@ export default async function RootLayout({
           <div className="flex min-h-screen flex-col bg-background">
             <HeaderClient isLoggedIn={isLoggedIn} role={role} email={email} />
             <main className="flex-1">{children}</main>
-            {role !== "ADMIN" && (
+            {role !== "ADMIN" && role !== "DOCTOR" && (
               <footer
                 id="kontak"
                 className="border-t border-zinc-200 bg-zinc-50/80 px-4 py-8 text-sm text-zinc-600 dark:border-zinc-800 dark:bg-zinc-950/80 dark:text-zinc-400"

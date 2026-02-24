@@ -16,6 +16,7 @@ enum UserRole {
 enum AppointmentStatus {
   BOOKED
   CHECKED_IN
+  IN_PROGRESS
   COMPLETED
   CANCELLED
   NO_SHOW
@@ -134,6 +135,7 @@ model Appointment {
   bookingCode       String            @unique
   qrCodeData        String
   status            AppointmentStatus @default(BOOKED)
+  notes             String?
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
   cancelledAt       DateTime?

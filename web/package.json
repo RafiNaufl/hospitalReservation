@@ -11,11 +11,17 @@
     "test:run": "vitest run"
   },
   "dependencies": {
-    "@prisma/client": "^7.4.1",
+    "@fullcalendar/daygrid": "^6.1.20",
+    "@fullcalendar/interaction": "^6.1.20",
+    "@fullcalendar/react": "^6.1.20",
+    "@fullcalendar/timegrid": "^6.1.20",
     "@prisma/adapter-pg": "^7.4.1",
+    "@prisma/client": "^7.4.1",
+    "@radix-ui/react-avatar": "^1.1.11",
     "@types/bcrypt": "^6.0.0",
     "bcrypt": "^6.0.0",
     "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "lucide-react": "^0.575.0",
     "next": "16.1.6",

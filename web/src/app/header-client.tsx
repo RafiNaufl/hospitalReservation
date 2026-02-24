@@ -22,9 +22,9 @@ export default function HeaderClient({
     setMobileOpen(false);
   }
 
-  const isAdminRoute = pathname.startsWith("/admin");
+  const isDashboardRoute = pathname.startsWith("/admin") || pathname.startsWith("/doctor");
 
-  if (isAdminRoute) {
+  if (isDashboardRoute) {
     return null;
   }
 
