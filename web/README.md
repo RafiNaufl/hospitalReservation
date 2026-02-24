@@ -83,9 +83,13 @@ npm run test
   - Mengakses halaman publik dan dashboard pasien.
   - Dapat melihat halaman “Dokter & Jadwal Praktik”.
 - Dokter:
+  - Email : dokter@example.com
+  - Password : dokter12345
   - Menggunakan `/doctor/dashboard` untuk memantau jadwal dan pasien.
   - Tidak dapat mengakses halaman publik “Dokter & Jadwal Praktik” (`/doctors` dan `/doctors/[id]` akan di-redirect ke dashboard dokter).
 - Admin:
+  - Email : admin@example.com
+  - Password : admin12345
   - Mengakses halaman `/admin/**` dan endpoint `/api/admin/**`.
 
 ## Deploy
