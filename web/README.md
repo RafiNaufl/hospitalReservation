@@ -1,103 +1,89 @@
-## Sistem Reservasi Dokter Rumah Sakit
+# Sistem Reservasi Rumah Sakit (Hospital Reservation System)
 
-Aplikasi ini adalah sistem reservasi dokter untuk rumah sakit di Indonesia, dibangun dengan:
+Sistem manajemen reservasi janji temu dokter untuk rumah sakit di Indonesia. Aplikasi ini dirancang untuk memudahkan pasien dalam melakukan booking jadwal dokter, serta membantu dokter dan admin dalam mengelola operasional harian rumah sakit.
 
-- Next.js 16 (App Router)
-- TypeScript
-- Tailwind CSS
-- PostgreSQL + Prisma
-- NextAuth untuk autentikasi
+## 🚀 Teknologi yang Digunakan
 
-## Menjalankan secara lokal
+- **Framework**: [Next.js 15+](https://nextjs.org/) (App Router)
+- **Bahasa**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) & [shadcn/ui](https://ui.shadcn.com/)
+- **Database**: [PostgreSQL](https://www.postgresql.org/) dengan [Prisma ORM](https://www.prisma.io/)
+- **Autentikasi**: [NextAuth.js](https://next-auth.js.org/)
+- **State Management**: [Zustand](https://github.com/pmndrs/zustand)
+- **Testing**: [Vitest](https://vitest.dev/)
 
-Install dependency di folder `web`:
+## ✨ Fitur Utama
 
+### 🏥 Pasien (Patient)
+- **Pencarian Dokter**: Cari dokter berdasarkan spesialisasi.
+- **Booking Jadwal**: Reservasi jadwal praktik dokter secara real-time.
+- **Dukungan BPJS & Umum**: Mendukung sistem rujukan BPJS dan pasien umum.
+- **Riwayat Janji Temu**: Pantau status reservasi dan riwayat kunjungan.
+- **Check-in QR Code**: Proses check-in cepat di rumah sakit menggunakan QR Code.
+
+### 👨‍⚕️ Dokter (Doctor)
+- **Dashboard Praktik**: Pantau antrean pasien harian secara real-time.
+- **Manajemen Status**: Perbarui status pemeriksaan pasien (Check-in, In Progress, Completed).
+- **Riwayat Pemeriksaan**: Lihat riwayat pasien yang pernah ditangani.
+
+### ⚙️ Admin
+- **Manajemen Master Data**: Kelola data Dokter, Pasien, Spesialisasi, dan Jadwal Praktik.
+- **Monitoring Reservasi**: Pantau seluruh janji temu yang ada di rumah sakit.
+- **Sistem Otomasi**: Cron job untuk menangani pasien *no-show* dan pengiriman reminder.
+
+## 🛠️ Persiapan & Instalasi
+
+### 1. Prasyarat
+- Node.js 20+
+- Database PostgreSQL yang sedang berjalan
+
+### 2. Instalasi Dependency
+Masuk ke direktori `web` dan instal paket yang dibutuhkan:
 ```bash
 cd web
 npm install
 ```
 
-Jalankan development server:
+### 3. Konfigurasi Environment
+Buat file `.env` di dalam folder `web` dan sesuaikan dengan database Anda:
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public"
+NEXTAUTH_SECRET="your-secret-key"
+NEXTAUTH_URL="http://localhost:3000"
+```
 
+### 4. Setup Database & Seeding
+Jalankan migrasi database dan isi dengan data awal (seed):
+```bash
+npx prisma migrate dev
+npx prisma db seed
+```
+*Catatan: Perintah seed akan membuat akun contoh untuk Admin, Dokter, dan Pasien dengan password default `password123`.*
+
+### 5. Menjalankan Aplikasi
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
+Akses aplikasi di [http://localhost:3000](http://localhost:3000).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🧪 Pengujian (Testing)
 
-Pastikan file `.env` di folder `web` sudah berisi `DATABASE_URL` Postgres yang valid.
-
-## Build & cek TypeScript
-
-Di folder `web`:
-
+Jalankan rangkaian tes menggunakan Vitest:
 ```bash
-npm run lint    # cek linting
-npm run build   # build production + type-checking
-```
-
-## Testing (Vitest)
-
-Untuk menjalankan seluruh test Vitest:
-
-```bash
-cd web
 npm run test:run
 ```
 
-Saat ini test mencakup:
+## 👥 Akun Contoh (Hasil Seeding)
 
-- `tests/api-doctors.test.ts`  
-  - Menguji endpoint `/api/doctors` termasuk seeding otomatis dan filter `specialtyId`.
-- `tests/api-endpoints-existence.test.ts`  
-  - Memastikan semua file `src/app/api/**/route.ts` memiliki handler HTTP (`GET`/`POST`/dll) dan dapat di-import tanpa error.
+Setelah menjalankan `npx prisma db seed`, Anda dapat menggunakan akun berikut untuk mencoba aplikasi:
 
-Untuk mode interactive/watch:
+| Role | Email | Password |
+| :--- | :--- | :--- |
+| **Admin** | `admin@rsud.go.id` | `password123` |
+| **Dokter** | `dr.andi@rsud.go.id` | `password123` |
+| **Pasien** | `pasien@example.com` | `password123` |
 
-```bash
-npm run test
-```
-
-## Fitur utama
-
-- Reservasi dokter untuk pasien (role `PATIENT`)
-- Dashboard dokter (role `DOCTOR`)
-- Panel admin untuk mengelola:
-  - Dokter & jadwal praktik
-  - Pasien
-  - Janji temu (appointments)
-  - Poli/spesialis
-- Endpoint check-in dan cron sederhana untuk:
-  - Menandai `NO_SHOW`
-  - Mengirim reminder (simulasi)
-
-## Catatan role akses
-
-- Pasien:
-  - Mengakses halaman publik dan dashboard pasien.
-  - Dapat melihat halaman “Dokter & Jadwal Praktik”.
-- Dokter:
-  - Email : dokter@example.com
-  - Password : dokter12345
-  - Menggunakan `/doctor/dashboard` untuk memantau jadwal dan pasien.
-  - Tidak dapat mengakses halaman publik “Dokter & Jadwal Praktik” (`/doctors` dan `/doctors/[id]` akan di-redirect ke dashboard dokter).
-- Admin:
-  - Email : admin@example.com
-  - Password : admin12345
-  - Mengakses halaman `/admin/**` dan endpoint `/api/admin/**`.
-
-## Deploy
-
-Aplikasi dapat dideploy seperti aplikasi Next.js pada umumnya (misalnya ke Vercel atau server Node.js biasa) dengan langkah standar:
-
-```bash
-cd web
-npm run build
-npm run start
-```
+## 📝 Catatan Tambahan
+- Aplikasi ini menggunakan Bahasa Indonesia sebagai bahasa utama.
+- Sistem mendukung integrasi BPJS melalui nomor rujukan (simulasi).
+- Gunakan endpoint `/api/cron/*` untuk mensimulasikan tugas terjadwal.

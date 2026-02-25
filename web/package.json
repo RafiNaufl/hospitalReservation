@@ -1,5 +1,5 @@
 {
-  "name": "web",
+  "name": "hospital-reservation",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,7 +8,11 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "postinstall": "prisma generate"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@fullcalendar/daygrid": "^6.1.20",
@@ -44,6 +48,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5",
     "vitest": "^3.0.0"
   }
